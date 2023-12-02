@@ -38,7 +38,7 @@ model City {
 model State {
   id         Int     @id @default(autoincrement())
   name       String
-  state_code String
+  state_code String 
   latitude   Float
   longitude  Float
   position   Json    @default("{}")
@@ -56,7 +56,7 @@ model Country {
   iso3            String
   iso2            String
   numeric_code    String
-  phone_code      String         @unique
+  phone_code      String         
   capital         String
   currency        String
   currency_name   String

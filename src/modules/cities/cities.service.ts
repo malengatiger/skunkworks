@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { City, Prisma } from '@prisma/client';
-import PrismaService from '../prisma/prisma.service';
-import { CityDistance } from '@/models/models';
-const mm = '🅿️ 🈳 🈂️ 🛂 🛃 CityService 🍎🍎';
+import { City, Prisma } from "@prisma/client";
+import PrismaService from "../prisma/prisma.service";
+import { CityDistance } from "@/models/models";
+import fs from "fs";
+import csvParser from "csv-parser";
+const mm = "🅿️ 🈳 🈂️ 🛂 🛃 CityService 🍎🍎";
 
 @Injectable()
 export class CitiesService {
@@ -18,7 +20,7 @@ export class CitiesService {
         stateId: city.stateId,
         countryId: city.countryId,
         position: {
-          type: 'Point',
+          type: "Point",
           coordinates: [city.longitude, city.latitude],
         },
       },
@@ -45,7 +47,7 @@ export class CitiesService {
 
   async updateCity(
     cityId: number,
-    cityData: Prisma.CityUpdateInput,
+    cityData: Prisma.CityUpdateInput
   ): Promise<any> {
     return this.prisma.city.update({ where: { id: cityId }, data: cityData });
   }
@@ -59,15 +61,15 @@ export class CitiesService {
   async findCitiesByPosition(
     latitude: number,
     longitude: number,
-    distance: number,
+    distance: number
   ): Promise<any[]> {
     console.log(
-      `${mm} findCitiesByPosition: - lat: ${latitude} - lng: ${longitude} distanceInKm: ${distance}`,
+      `${mm} findCitiesByPosition: - lat: ${latitude} - lng: ${longitude} distanceInKm: ${distance}`
     );
     try {
       const distanceInDegrees = distance * (360 / 40075);
       console.log(
-        `${mm} findCitiesByPosition: - lat: ${latitude} - lng: ${longitude} distanceInDegrees: ${distanceInDegrees}`,
+        `${mm} findCitiesByPosition: - lat: ${latitude} - lng: ${longitude} distanceInDegrees: ${distanceInDegrees}`
       );
       const cities = await this.prisma.$queryRaw<any[]>(Prisma.sql`
           SELECT "City"."id", "City"."name", "City"."position",
@@ -86,11 +88,11 @@ export class CitiesService {
           ORDER BY distance_in_km;
   `);
       console.log(
-        `${mm} findCitiesByPosition: ${cities.length} cities found within distance: ${distance} km`,
+        `${mm} findCitiesByPosition: ${cities.length} cities found within distance: ${distance} km`
       );
       cities.forEach((c) => {
         console.log(
-          `${mm} city found, distance from location: ${c.distance_in_km} 🍎 name: 🛃 🛃 ${c.name}`,
+          `${mm} city found, distance from location: ${c.distance_in_km} 🍎 name: 🛃 🛃 ${c.name}`
         );
       });
       return cities;
@@ -104,10 +106,10 @@ export class CitiesService {
     latitude: number,
     longitude: number,
     withinKM: number,
-    countryId: number,
+    countryId: number
   ): Promise<CityDistance[]> {
     console.log(
-      `${mm} calculateDistanceFromLocation: latitude: ${latitude} longitude: ${longitude} within  😡 ${withinKM} km  😡`,
+      `${mm} calculateDistanceFromLocation: latitude: ${latitude} longitude: ${longitude} within  😡 ${withinKM} km  😡`
     );
     try {
       const cities = await this.prisma.$queryRaw<any[]>(Prisma.sql`
@@ -153,18 +155,20 @@ export class CitiesService {
       cityDistances.forEach((city) => {
         // console.log(city);
         console.log(
-          `${mm} city found within distance of location: 🌎 ${city.distanceInKM} KM 🍎 ${city.stateName} 🥬 ${city.cityName} `,
+          `${mm} city found within distance of location: 🌎 ${city.distanceInKM} KM 🍎 ${city.stateName} 🥬 ${city.cityName} `
         );
       });
 
       console.log(
-        `${mm} cities found within distance of location: 🍎 🍎 🍎 ${cities.length} places, towns and cities 🍎`,
+        `${mm} cities found within distance of location: 🍎 🍎 🍎 ${cities.length} places, towns and cities 🍎`
       );
 
       return cityDistances;
     } catch (error) {
-      console.error('Error calculating distance:', error);
+      console.error("Error calculating distance:", error);
       throw error;
     }
   }
+
+
 }
