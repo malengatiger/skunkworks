@@ -1,0 +1,70 @@
+\nInvalid `this.prisma.country.create()` invocation in
+\n/Users/aubreymalabie/Work/nest-postgres-monitor/src/models/extract.ts:105:56
+\n\n  102 );\n  103 \n  104 for (const country of countries) {
+    \n→ 105   const createdCountry = await this.prisma.country.create({
+        \n          data: {
+            \n            name: \"Antigua And Barbuda\",
+            \n            iso3: \"ATG\",
+            \n            iso2: \"AG\",
+            \n            numeric_code: \"028\",
+            \n            phone_code: \"+1-268\",
+            \n            capital: \"St. John's\",
+            \n            currency: \"XCD\",
+            \n            currency_name: \"Eastern Caribbean dollar\",
+            \n            currency_symbol: \"$\",
+            \n            tld: \".ag\",
+            \n            native: \"Antigua and Barbuda\",
+            \n            region: \"Americas\",
+            \n            subregion: \"Caribbean\",
+            \n            latitude: 17.05,
+            \n            longitude: -61.8,
+            \n            emoji: \"🇦🇬\",
+            \n            emojiU: \"U+1F1E6 U+1F1EC\",
+            \n            timezones: {
+                \n              create: [
+                    \n                {
+                        \n                  zoneName: \"America/Antigua\",
+                        \n                  gmtOffset: -14400,
+                        \n                  gmtOffsetName: \"UTC-04:00\",
+                        \n                  abbreviation: \"AST\",
+                        \n                  tzName: \"Atlantic Standard Time\"
+                        \n                }
+                        \n              ]
+                        \n            },
+                        \n            states: {
+                            \n              create: [
+                                \n                {
+                                    \n                  name: \"Barbuda\",
+                                    \n                  state_code: \"10\",
+                                    \n                  latitude: 17.6266242,
+                                    \n                  longitude: -61.7713028,
+                                    \n                  type: null,
+                                    \n                  cities: {
+                                        \n                    create: [
+                                            \n                      {
+                                                \n                        name: \"Codrington\",
+                                                \n                        latitude: 17.63333,
+                                                \n                        longitude: -61.83333
+                                                \n                      }
+                                                \n                    ]
+                                                \n                  }
+                                                \n                },
+                                                \n                {
+                                                    \n                  name: \"Redonda\",
+                                                    \n                  state_code: \"11\",
+                                                    \n                  latitude: 16.938416,
+                                                    \n                  longitude: -62.3455148,
+                                                    \n                  type: null,
+                                                    \n                  cities: {
+                                                        \n                    create: []
+                                                        \n                  }
+                                                        \n                },
+                                                        \n                {
+                                                            \n                  name: \"Saint George Parish\",
+                                                            \n                  state_code: \"03\",
+                                                            \n                  latitude: NaN,
+                                                            \n                  longitude: NaN,
+                                                            \n                  type: null,
+                                                            \n                  cities: {\n                    create: [\n                      {\n                        name: \"Piggotts\",\n                        latitude: 17.11667,\n                        longitude: -61.8\n                      }\n                    ]\n                  }\n                },\n                {\n                  name: \"Saint John Parish\",\n                  state_code: \"04\",\n                  latitude: NaN,\n                  longitude: NaN,\n                  type: null,\n                  cities: {\n                    create: [\n                      {\n                        name: \"Potters Village\",\n                        latitude: 17.11337,\n                        longitude: -61.81962\n                      },\n                      {\n                        name: \"Saint John’s\",\n                        latitude: 17.12096,\n                        longitude: -61.84329\n                      }\n                    ]\n                  }\n                },\n                {\n                  name: \"Saint Mary Parish\",\n                  state_code: \"05\",\n                  latitude: NaN,\n                  longitude: NaN,\n                  type: null,\n                  cities: {\n                    create: [\n                      {\n                        name: \"Bolands\",\n                        latitude: 17.06565,\n                        longitude: -61.87466\n                      }\n                    ]\n                  }\n                },\n                {\n                  name: \"Saint Paul Parish\",\n                  state_code: \"06\",\n                  latitude: NaN,\n                  longitude: NaN,\n                  type: null,\n                  cities: {\n                    create: [\n                      {\n                        name: \"Falmouth\",\n                        latitude: 17.02741,\n                        longitude: -61.78136\n                      },\n                      {\n                        name: \"Liberta\",\n                        latitude: 17.04141,\n                        longitude: -61.79052\n                      }\n                    ]\n                  }\n                },\n                {\n                  name: \"Saint Peter Parish\",\n                  state_code: \"07\",\n                  latitude: NaN,\n                  longitude: NaN,\n                  type: null,\n                  cities: {\n                    create: [\n                      {\n                        name: \"All Saints\",\n                        latitude: 17.06671,\n                        longitude: -61.79303\n                      },\n                      {\n                        name: \"Parham\",\n                        latitude: 17.09682,\n                        longitude: -61.77046\n                      }\n                    ]\n                  }\n                },\n                {\n                  name: \"Saint Philip Parish\",\n                  state_code: \"08\",\n                  latitude: 40.4368258,\n                  longitude: -80.0685532,\n                  type: null,\n                  cities: {\n                    create: []\n                  }\n                }\n              ]\n            }\n          }\n        })
+                                                            \n
+                                                            \nArgument `latitude` is missing.

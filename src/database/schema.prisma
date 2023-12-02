@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Timezone {
+  id            Int     @id @default(autoincrement())
+  zoneName      String
+  gmtOffset     Int
+  gmtOffsetName String
+  abbreviation  String
+  tzName        String
+  country       Country @relation(fields: [countryId], references: [id])
+  countryId     Int
+}
+
+
+model City {
+  id           Int            @id @default(autoincrement())
+  name         String
+  latitude     Float
+  longitude    Float
+  position     Json           @default("{}")
+  state        State          @relation(fields: [stateId], references: [id])
+  stateId      Int
+  country      Country        @relation(fields: [countryId], references: [id])
+  countryId    Int
+  organizations Organization[]
+  projects      Project[]
+
+  @@unique([stateId, name])
+}
+
+model State {
+  id         Int     @id @default(autoincrement())
+  name       String
+  state_code String
+  latitude   Float
+  longitude  Float
+  position   Json    @default("{}")
+  type       String?
+  cities     City[]
+  countryId  Int
+  country    Country @relation(fields: [countryId], references: [id])
+
+  @@unique([countryId, name])
+}
+
+model Country {
+  id              Int            @id @default(autoincrement())
+  name            String         @unique
+  iso3            String
+  iso2            String
+  numeric_code    String
+  phone_code      String         @unique
+  capital         String
+  currency        String
+  currency_name   String
+  currency_symbol String
+  tld             String
+  native          String
+  region          String
+  subregion       String
+  latitude        Float
+  longitude       Float
+  position        Json           @default("{}")
+  emoji           String
+  emojiU          String
+  flag            Boolean        @default(false)
+  states          State[]
+  timezones       Timezone[]
+  cities          City[]
+  organizations   Organization[]
+}
+
+model Organization {
+  organizationId String    @id @default(uuid())
+  email          String    @unique
+  password       String
+  name           String
+  phone          String
+  countryId      Int
+  country        Country?  @relation(fields: [countryId], references: [id])
+  cityId         Int
+  City           City?     @relation(fields: [cityId], references: [id])
+  OrgUser        OrgUser[]
+  Project        Project[]
+
+  @@map(name: "organizations")
+}
+
+model OrgUser {
+  userId         String        @id @default(uuid())
+  email          String        @unique
+  password       String
+  name           String
+  phone          String
+  nickName       String
+  organizationId String
+  Organization   Organization? @relation(fields: [organizationId], references: [organizationId])
+  Project        Project[]
+  Photo          Photo[]
+  Video          Video[]
+  Audio          Audio[]
+
+  @@map(name: "organizationUsers")
+}
+
+model Project {
+  projectId       String            @id @default(uuid())
+  email           String
+  name            String
+  phone           String
+  dateRegistered  String
+  organizationId  String
+  Organization    Organization?     @relation(fields: [organizationId], references: [organizationId])
+  Photo           Photo[]
+  Video           Video[]
+  Audio           Audio[]
+  City            City?             @relation(fields: [cityId], references: [id])
+  cityId          Int
+  userId          String
+  OrgUser         OrgUser?          @relation(fields: [userId], references: [userId])
+  ProjectPosition ProjectPosition[]
+
+  @@map(name: "projects")
+}
+
+model ProjectPosition {
+  projectPositionId String   @id @default(uuid())
+  name              String?
+  dateRegistered    String
+  projectId         String
+  Project           Project? @relation(fields: [projectId], references: [projectId])
+  latitude          Float
+  longitude         Float
+  position          Json     @default("{}")
+
+  @@map(name: "projectPositions")
+}
+
+model Photo {
+  photoId   String   @id @default(uuid())
+  caption   String
+  latitude  Float
+  longitude Float
+  date      String
+  position  Json     @default("{}")
+  projectId String
+  Project   Project? @relation(fields: [projectId], references: [projectId])
+  userId    String
+  OrgUser   OrgUser? @relation(fields: [userId], references: [userId])
+
+  @@map(name: "photos")
+}
+
+model Video {
+  videoId   String   @id @default(uuid())
+  caption   String
+  latitude  Float
+  longitude Float
+  date      String
+  position  Json     @default("{}")
+  projectId String
+  Project   Project? @relation(fields: [projectId], references: [projectId])
+  userId    String
+  OrgUser   OrgUser? @relation(fields: [userId], references: [userId])
+
+  @@map(name: "videos")
+}
+
+model Audio {
+  audioId   String   @id @default(uuid())
+  caption   String
+  latitude  Float
+  longitude Float
+  date      String
+  position  Json     @default("{}")
+  projectId String
+  Project   Project? @relation(fields: [projectId], references: [projectId])
+  userId    String
+  OrgUser   OrgUser? @relation(fields: [userId], references: [userId])
+
+  @@map(name: "audios")
+}

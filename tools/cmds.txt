@@ -1,0 +1,12 @@
+
+lsof -n -i4TCP:8080
+kill -9 51101
+
+/opt/homebrew/opt/redis/bin/redis-server /opt/homebrew/etc/redis.conf
+
+redis-cli -h 127.0.0.1 -p 6379
+
+//local coords
+npm install -g @rafaelrinaldi/whereami
+whereami -f json
+   
