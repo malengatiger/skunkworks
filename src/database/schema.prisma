@@ -75,6 +75,7 @@ model Country {
   timezones       Timezone[]
   cities          City[]
   organizations   Organization[]
+  worldPopulation WorldPopulation[]
 }
 
 model Organization {
@@ -186,4 +187,78 @@ model Audio {
   OrgUser   OrgUser? @relation(fields: [userId], references: [userId])
 
   @@map(name: "audios")
+}
+
+model WorldPopulation {
+  id        Int      @id @default(autoincrement())
+  countryName   String   @unique
+  code      String
+  indicator String
+  indicatorCode String
+  countryId      Int?
+  country        Country?  @relation(fields: [countryId], references: [id])
+  population1960 BigInt?
+  population1961 BigInt?
+  population1962 BigInt?
+  population1963 BigInt?
+  population1964 BigInt?
+  population1965 BigInt?
+  population1966 BigInt?
+  population1967 BigInt?
+  population1968 BigInt?
+  population1969 BigInt?
+  population1970 BigInt?
+  population1971 BigInt?
+  population1972 BigInt?
+  population1973 BigInt?
+  population1974 BigInt?
+  population1975 BigInt?
+  population1976 BigInt?
+  population1977 BigInt?
+  population1978 BigInt?
+  population1979 BigInt?
+  population1980 BigInt?
+  population1981 BigInt?
+  population1982 BigInt?
+  population1983 BigInt?
+  population1984 BigInt?
+  population1985 BigInt?
+  population1986 BigInt?
+  population1987 BigInt?
+  population1988 BigInt?
+  population1989 BigInt?
+  population1990 BigInt?
+  population1991 BigInt?
+  population1992 BigInt?
+  population1993 BigInt?
+  population1994 BigInt?
+  population1995 BigInt?
+  population1996 BigInt?
+  population1997 BigInt?
+  population1998 BigInt?
+  population1999 BigInt?
+  population2000 BigInt?
+  population2001 BigInt?
+  population2002 BigInt?
+  population2003 BigInt?
+  population2004 BigInt?
+  population2005 BigInt?
+  population2006 BigInt?
+  population2007 BigInt?
+  population2008 BigInt?
+  population2009 BigInt?
+  population2010 BigInt?
+  population2011 BigInt?
+  population2012 BigInt?
+  population2013 BigInt?
+  population2014 BigInt?
+  population2015 BigInt?
+  population2016 BigInt?
+  population2017 BigInt?
+  population2018 BigInt?
+  population2019 BigInt?
+  population2020 BigInt?
+  population2021 BigInt?
+  population2022 BigInt?
+
 }

@@ -72,19 +72,21 @@ export class CitiesService {
         `${mm} findCitiesByPosition: - lat: ${latitude} - lng: ${longitude} distanceInDegrees: ${distanceInDegrees}`
       );
       const cities = await this.prisma.$queryRaw<any[]>(Prisma.sql`
-          SELECT "City"."id", "City"."name", "City"."position",
+          SELECT "City"."id", "State"."name" as mState, "City"."name" as mCity, "City"."position",
           CAST(ST_DistanceSphere(
             ST_MakePoint(CAST(("City"."position"->>'coordinates')::json->>0 AS float), 
                           CAST(("City"."position"->>'coordinates')::json->>1 AS float)),
             ST_MakePoint(${longitude}::float, ${latitude}::float)
           ) / 1000 AS numeric(10, 2)) AS distance_in_km
-          FROM "City"
+          FROM "City", "State"
           WHERE ST_DWithin(
             ST_MakePoint(CAST(("City"."position"->>'coordinates')::json->>0 AS float), 
                   CAST(("City"."position"->>'coordinates')::json->>1 AS float)),
             ST_MakePoint(${longitude}::float, ${latitude}::float),
             ${distanceInDegrees}::float
           )
+          AND "City"."stateId" = "State"."id" 
+          AND "City"."countryId" = "State"."countryId" 
           ORDER BY distance_in_km;
   `);
       console.log(
@@ -92,7 +94,7 @@ export class CitiesService {
       );
       cities.forEach((c) => {
         console.log(
-          `${mm} city found, distance from location: ${c.distance_in_km} 🍎 name: 🛃 🛃 ${c.name}`
+          `${mm} city found, distance from location: ${c.distance_in_km} - state: ${c.mstate}  \t🍎 city: 🛃 🛃 ${c.mcity}`
         );
       });
       return cities;

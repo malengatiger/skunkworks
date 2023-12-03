@@ -11,6 +11,7 @@ import { CitiesService } from './cities.service';
 import { City } from '@prisma/client';
 import { SACityService } from '@/models/extract.sa';
 import { USCityService } from '@/models/extract.us';
+import { WorldPopulationService } from '@/models/worldpop';
 
 const mm = '🅿️ 🅿️ 🅿️ 🅿️  CityController';
 
@@ -19,7 +20,8 @@ export class CitiesController {
   constructor(
     private readonly citiesService: CitiesService,
     private readonly saCitiesService: SACityService,
-    private readonly usCityService: USCityService
+    private readonly usCityService: USCityService,
+    private readonly worldPopulationService: WorldPopulationService
   ) {}
 
   @Post("createCity")
@@ -51,6 +53,13 @@ export class CitiesController {
     return list;
   }
 
+  @Get("importWorldPopulationFromCSV")
+  async importWorldPopulationFromCSV(): Promise<any[]> {
+
+    const list = await this.worldPopulationService.importWorldPopulationFromCSV();
+
+    return list;
+  }
   @Get("findCitiesByPosition")
   async findCitiesByPosition(
     @Query("latitude") latitude: number,
@@ -98,9 +107,7 @@ export class CitiesController {
   }
   @Get("extractUSACities")
   async extractUSACities(): Promise<any> {
-    console.log(
-          `${mm} ... extractUSACities starting ...`
-        );
+    console.log(`${mm} ... extractUSACities starting ...`);
 
     return this.usCityService.extractUSACities();
   }
