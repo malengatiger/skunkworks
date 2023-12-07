@@ -10,6 +10,9 @@ import { CitiesModule } from './modules/cities/cities.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LogElapsedTimeInterceptor } from './elapsed/elapsed.filter';
 import { USCityService } from './models/extract.us';
+import { OrganizationsModule } from './modules/organizations/organizations.module';
+import { ProjectsModule } from './modules/projects/projects.module';
+import { MediaModule } from './modules/media/media.module';
 
 @Module({
   imports: [
@@ -17,6 +20,9 @@ import { USCityService } from './models/extract.us';
     PrismaModule,
     CountriesModule,
     CitiesModule,
+    OrganizationsModule,
+    ProjectsModule,
+    MediaModule,
   ],
   providers: [
     {

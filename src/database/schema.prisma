@@ -18,19 +18,18 @@ model Timezone {
   countryId     Int
 }
 
-
 model City {
-  id           Int            @id @default(autoincrement())
-  name         String
-  latitude     Float
-  longitude    Float
-  position     Json           @default("{}")
-  state        State          @relation(fields: [stateId], references: [id])
-  stateId      Int
-  country      Country        @relation(fields: [countryId], references: [id])
-  countryId    Int
+  id            Int            @id @default(autoincrement())
+  name          String
+  latitude      Float
+  longitude     Float
+  position      Json           @default("{}")
+  state         State          @relation(fields: [stateId], references: [id])
+  stateId       Int
+  country       Country        @relation(fields: [countryId], references: [id])
+  countryId     Int
   organizations Organization[]
-  projects      Project[]
+  projects      Project[] // Add this field
 
   @@unique([stateId, name])
 }
@@ -38,7 +37,7 @@ model City {
 model State {
   id         Int     @id @default(autoincrement())
   name       String
-  state_code String 
+  state_code String
   latitude   Float
   longitude  Float
   position   Json    @default("{}")
@@ -51,12 +50,12 @@ model State {
 }
 
 model Country {
-  id              Int            @id @default(autoincrement())
-  name            String         @unique
+  id              Int              @id @default(autoincrement())
+  name            String           @unique
   iso3            String
   iso2            String
   numeric_code    String
-  phone_code      String         
+  phone_code      String
   capital         String
   currency        String
   currency_name   String
@@ -67,76 +66,77 @@ model Country {
   subregion       String
   latitude        Float
   longitude       Float
-  position        Json           @default("{}")
+  position        Json             @default("{}")
   emoji           String
   emojiU          String
-  flag            Boolean        @default(false)
+  flag            Boolean          @default(false)
   states          State[]
   timezones       Timezone[]
   cities          City[]
   organizations   Organization[]
-  worldPopulation WorldPopulation[]
+  worldPopulation WorldPopulation?
 }
 
 model Organization {
-  organizationId String    @id @default(uuid())
+  organizationId Int       @id @default(autoincrement())
   email          String    @unique
   password       String
   name           String
   phone          String
   countryId      Int
   country        Country?  @relation(fields: [countryId], references: [id])
-  cityId         Int
-  City           City?     @relation(fields: [cityId], references: [id])
-  OrgUser        OrgUser[]
-  Project        Project[]
+  cities         City[]
+  orgUsers       OrgUser[]
+  projects       Project[]
 
+  @@unique([countryId, name])
   @@map(name: "organizations")
 }
 
 model OrgUser {
-  userId         String        @id @default(uuid())
+  userId         Int           @id @default(autoincrement())
   email          String        @unique
   password       String
   name           String
   phone          String
   nickName       String
-  organizationId String
-  Organization   Organization? @relation(fields: [organizationId], references: [organizationId])
-  Project        Project[]
-  Photo          Photo[]
-  Video          Video[]
-  Audio          Audio[]
+  organizationId Int
+  organization   Organization? @relation(fields: [organizationId], references: [organizationId])
+  projects       Project[]
+  photos         Photo[]
+  videos         Video[]
+  audios         Audio[]
 
+  @@unique([organizationId, name])
   @@map(name: "organizationUsers")
 }
 
 model Project {
-  projectId       String            @id @default(uuid())
-  email           String
-  name            String
-  phone           String
-  dateRegistered  String
-  organizationId  String
-  Organization    Organization?     @relation(fields: [organizationId], references: [organizationId])
-  Photo           Photo[]
-  Video           Video[]
-  Audio           Audio[]
-  City            City?             @relation(fields: [cityId], references: [id])
-  cityId          Int
-  userId          String
-  OrgUser         OrgUser?          @relation(fields: [userId], references: [userId])
-  ProjectPosition ProjectPosition[]
+  projectId        Int               @id @default(autoincrement())
+  email            String
+  name             String
+  phone            String
+  dateRegistered   String
+  organizationId   Int
+  organization     Organization?     @relation(fields: [organizationId], references: [organizationId])
+  photos           Photo[]
+  videos           Video[]
+  audios           Audio[]
+  cities           City[] // Add this field
+  orgUser          OrgUser?          @relation(fields: [orgUserUserId], references: [userId])
+  orgUserUserId    Int?
+  projectPositions ProjectPosition[]
 
+  @@unique([organizationId, name])
   @@map(name: "projects")
 }
 
 model ProjectPosition {
-  projectPositionId String   @id @default(uuid())
+  projectPositionId Int      @id @default(autoincrement())
   name              String?
   dateRegistered    String
-  projectId         String
-  Project           Project? @relation(fields: [projectId], references: [projectId])
+  projectId         Int
+  project           Project? @relation(fields: [projectId], references: [projectId])
   latitude          Float
   longitude         Float
   position          Json     @default("{}")
@@ -145,58 +145,58 @@ model ProjectPosition {
 }
 
 model Photo {
-  photoId   String   @id @default(uuid())
+  photoId   Int      @id @default(autoincrement())
   caption   String
   latitude  Float
   longitude Float
   date      String
   position  Json     @default("{}")
-  projectId String
-  Project   Project? @relation(fields: [projectId], references: [projectId])
-  userId    String
-  OrgUser   OrgUser? @relation(fields: [userId], references: [userId])
+  projectId Int
+  project   Project? @relation(fields: [projectId], references: [projectId])
+  userId    Int
+  orgUser   OrgUser? @relation(fields: [userId], references: [userId])
 
   @@map(name: "photos")
 }
 
 model Video {
-  videoId   String   @id @default(uuid())
+  videoId   Int      @id @default(autoincrement())
   caption   String
   latitude  Float
   longitude Float
   date      String
   position  Json     @default("{}")
-  projectId String
-  Project   Project? @relation(fields: [projectId], references: [projectId])
-  userId    String
-  OrgUser   OrgUser? @relation(fields: [userId], references: [userId])
+  projectId Int
+  project   Project? @relation(fields: [projectId], references: [projectId])
+  userId    Int
+  orgUser   OrgUser? @relation(fields: [userId], references: [userId])
 
   @@map(name: "videos")
 }
 
 model Audio {
-  audioId   String   @id @default(uuid())
+  audioId   Int      @id @default(autoincrement())
   caption   String
   latitude  Float
   longitude Float
   date      String
   position  Json     @default("{}")
-  projectId String
-  Project   Project? @relation(fields: [projectId], references: [projectId])
-  userId    String
-  OrgUser   OrgUser? @relation(fields: [userId], references: [userId])
+  projectId Int
+  project   Project? @relation(fields: [projectId], references: [projectId])
+  userId    Int
+  orgUser   OrgUser? @relation(fields: [userId], references: [userId])
 
   @@map(name: "audios")
 }
 
 model WorldPopulation {
-  id        Int      @id @default(autoincrement())
-  countryName   String   @unique
-  code      String
-  indicator String
-  indicatorCode String
-  countryId      Int?
-  country        Country?  @relation(fields: [countryId], references: [id])
+  id             Int      @id @default(autoincrement())
+  countryName    String   @unique
+  code           String
+  indicator      String
+  indicatorCode  String
+  countryId      Int?     @unique
+  country        Country? @relation(fields: [countryId], references: [id])
   population1960 BigInt?
   population1961 BigInt?
   population1962 BigInt?
@@ -260,5 +260,4 @@ model WorldPopulation {
   population2020 BigInt?
   population2021 BigInt?
   population2022 BigInt?
-
 }

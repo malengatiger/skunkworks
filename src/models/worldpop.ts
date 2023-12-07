@@ -21,28 +21,51 @@ interface CsvData {
 export class WorldPopulationService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async importWorldPopulationFromCSV(): Promise<WorldPopulation[]> {
-    logger.info(`${mm} world population starting ...`);
-    const populations: CsvData[] = [];
-    let pops: WorldPopulation[] = [];
-    const filePath = "files/worldpop2.csv";
-    let isFirstRow = true;
+  isBigInt(value: any): value is BigInt {
+    return typeof value === "bigint";
+  }
 
+   serializeBigInt(value: any): any {
+  if (typeof value === "bigint") {
+    return value.toString();
+  } else if (Array.isArray(value)) {
+    return value.map(this.serializeBigInt);
+  } else if (typeof value === "object" && value !== null) {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, val]) => [key, this.serializeBigInt(val)])
+    );
+  }
+  return value;
+}
+
+async importWorldPopulationFromCSV(): Promise<WorldPopulation[]> {
+  logger.info(`${mm} world population starting ...`);
+  const populations: CsvData[] = [];
+  let pops: WorldPopulation[] = [];
+  const filePath = "files/worldpop2.csv";
+  let isFirstRow = true;
+
+  await new Promise<void>((resolve, reject) => {
     createReadStream(filePath)
       .pipe(csvParser())
       .on("data", (data: CsvData) => {
-        // if (isFirstRow) {
-        //   isFirstRow = false;
-        //   return; // Skip the first row
-        // }
-
-        populations.push(data);
+        // Convert BigInt values using custom serialization
+        populations.push(this.serializeBigInt(data));
       })
       .on("end", async () => {
-        await this.savePopulations(populations);
+        pops = await this.savePopulations(populations);
+        resolve();
+      })
+      .on("error", (error) => {
+        reject(error);
       });
-    return pops;
-  }
+  });
+
+  // Serialize the populations to JSON
+  const serializedPopulations = JSON.stringify(pops, null, 2);
+
+  return JSON.parse(serializedPopulations);
+}
 
   private async savePopulations(
     populations: CsvData[]
@@ -84,6 +107,7 @@ export class WorldPopulationService {
                   countryId !== 0 ? { connect: { id: countryId } } : undefined,
                 countryName: countryName,
                 code: countryCode,
+                // countryId: countryId !== 0 ? countryId : undefined,
                 indicator: population["Indicator Name"],
                 indicatorCode: population["Indicator Code"],
                 // countryId: countryId,
